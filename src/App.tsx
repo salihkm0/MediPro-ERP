@@ -12,6 +12,8 @@ import Wards from './pages/Wards';
 import Inventory from './pages/Inventory';
 import Insurance from './pages/Insurance';
 import Reports from './pages/Reports';
+import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -51,6 +53,8 @@ function App() {
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/insurance" element={<Insurance />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </main>
       </div>
