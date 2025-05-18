@@ -63,25 +63,27 @@ function StatCard({ icon: Icon, label, value, color, trend, description }: {
 }
 
 const PatientFlowChart = () => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: isMobile ? 'bottom' : 'top',
       },
     },
     scales: {
       y: {
         beginAtZero: true,
         title: {
-          display: true,
+          display: !isMobile,
           text: 'Number of Patients',
         },
       },
       x: {
         title: {
-          display: true,
+          display: !isMobile,
           text: 'Day of Week',
         },
       },
@@ -109,6 +111,8 @@ const PatientFlowChart = () => {
 };
 
 const PatientDemographicsChart = () => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  
   const data = {
     labels: ['0-18', '19-35', '36-50', '51-65', '65+'],
     datasets: [
@@ -127,10 +131,21 @@ const PatientDemographicsChart = () => {
     ],
   };
 
-  return <Doughnut data={data} options={{ maintainAspectRatio: false }} />;
+  const options = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: isMobile ? 'bottom' : 'right',
+      },
+    },
+  };
+
+  return <Doughnut data={data} options={options} />;
 };
 
 const DepartmentDistributionChart = () => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  
   const data = {
     labels: ['Cardiology', 'Pediatrics', 'Neurology', 'Orthopedics', 'Emergency'],
     datasets: [
@@ -149,29 +164,40 @@ const DepartmentDistributionChart = () => {
     ],
   };
 
-  return <Pie data={data} options={{ maintainAspectRatio: false }} />;
+  const options = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: isMobile ? 'bottom' : 'right',
+      },
+    },
+  };
+
+  return <Pie data={data} options={options} />;
 };
 
 const PatientHealthTrendsChart = () => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: isMobile ? 'bottom' : 'top',
       },
     },
     scales: {
       y: {
         beginAtZero: true,
         title: {
-          display: true,
+          display: !isMobile,
           text: 'Number of Cases',
         },
       },
       x: {
         title: {
-          display: true,
+          display: !isMobile,
           text: 'Month',
         },
       },
@@ -292,10 +318,10 @@ function Dashboard() {
         />
       </div>
 
-      {/* Charts Section - Hidden on mobile */}
-      <div className="hidden sm:block">
+      {/* Charts Section - Now visible on mobile */}
+      <div className="mb-6 sm:mb-8">
         {/* Main Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Patient Flow Chart */}
           <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md lg:col-span-2">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
@@ -306,7 +332,7 @@ function Dashboard() {
                 <option>This Year</option>
               </select>
             </div>
-            <div className="h-64 sm:h-80">
+            <div className="h-48 sm:h-80">
               <PatientFlowChart />
             </div>
           </div>
@@ -321,14 +347,14 @@ function Dashboard() {
                 <option>By Insurance</option>
               </select>
             </div>
-            <div className="h-64 sm:h-80">
+            <div className="h-48 sm:h-80">
               <PatientDemographicsChart />
             </div>
           </div>
         </div>
 
         {/* Secondary Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Department Distribution */}
           <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
@@ -339,7 +365,7 @@ function Dashboard() {
                 <option>Last Quarter</option>
               </select>
             </div>
-            <div className="h-64 sm:h-80">
+            <div className="h-48 sm:h-80">
               <DepartmentDistributionChart />
             </div>
           </div>
@@ -354,7 +380,7 @@ function Dashboard() {
                 <option>Last 3 Years</option>
               </select>
             </div>
-            <div className="h-64 sm:h-80">
+            <div className="h-48 sm:h-80">
               <PatientHealthTrendsChart />
             </div>
           </div>
