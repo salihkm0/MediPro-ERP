@@ -1,50 +1,8 @@
-// import React from 'react';
-// import { Users } from 'lucide-react';
-// import PatientForm from '../components/PatientForm';
-// import toast from 'react-hot-toast';
-
-// export default function Patients() {
-
-//   const handleSave = async (data) => {
-//     try {
-//       // Your save logic here (API call, etc.)
-//       console.log('Patient data:', data);
-//       // Simulate API call
-//       await new Promise(resolve => setTimeout(resolve, 1000));
-//     } catch (error) {
-//       throw error; // Let the form handle the error
-//     }
-//   };
-
-//   return (
-//     <div className="space-y-6">
-//       <div className="flex items-center justify-between">
-//         <div className="flex items-center gap-3">
-//           <Users className="h-8 w-8 text-blue-600" />
-//           <h1 className="text-2xl font-bold text-gray-900">Patients</h1>
-//         </div>
-//       </div>
-      
-//       <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-//         <div className="p-6">
-//           <p className="text-gray-500">Patient management interface will be implemented here.</p>
-//         </div>
-//         <div className="max-w-4xl mx-auto p-4">
-//       <PatientForm
-//         onSave={handleSave}
-//         onCancel={() => toast('Operation canceled')}
-//       />
-//     </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 import React, { useState } from 'react';
 import { Users, Search, Plus, FileText, Phone, Mail, Calendar } from 'lucide-react';
 import PatientForm from '../components/PatientForm';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface Patient {
   id: string;
@@ -61,6 +19,8 @@ interface Patient {
 function Patients() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const navigate = useNavigate()
 
   const patients: Patient[] = [
     {
@@ -97,171 +57,6 @@ function Patients() {
       status: 'Inactive'
     }
   ];
-
-  // const AddPatientForm = () => {
-  //   const [formData, setFormData] = useState({
-  //     name: '',
-  //     age: '',
-  //     gender: 'Male',
-  //     contact: '',
-  //     email: '',
-  //     bloodType: '',
-  //     medicalHistory: ''
-  //   });
-
-  //   const handleSubmit = (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     // Handle form submission here
-  //     console.log('Form submitted:', formData);
-  //     setShowAddForm(false);
-  //   };
-
-  //   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-  //     const { name, value } = e.target;
-  //     setFormData(prev => ({
-  //       ...prev,
-  //       [name]: value
-  //     }));
-  //   };
-
-  //   return (
-  //     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  //       <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-  //         <div className="flex justify-between items-center mb-6">
-  //           <h2 className="text-2xl font-semibold">Add New Patient</h2>
-  //           <button
-  //             onClick={() => setShowAddForm(false)}
-  //             className="text-gray-500 hover:text-gray-700"
-  //           >
-  //             ×
-  //           </button>
-  //         </div>
-
-  //         <form onSubmit={handleSubmit} className="space-y-6">
-  //           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-  //             <div>
-  //               <label className="block text-sm font-medium text-gray-700 mb-1">
-  //                 Full Name
-  //               </label>
-  //               <input
-  //                 type="text"
-  //                 name="name"
-  //                 value={formData.name}
-  //                 onChange={handleChange}
-  //                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //                 required
-  //               />
-  //             </div>
-
-  //             <div>
-  //               <label className="block text-sm font-medium text-gray-700 mb-1">
-  //                 Age
-  //               </label>
-  //               <input
-  //                 type="number"
-  //                 name="age"
-  //                 value={formData.age}
-  //                 onChange={handleChange}
-  //                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //                 required
-  //               />
-  //             </div>
-
-  //             <div>
-  //               <label className="block text-sm font-medium text-gray-700 mb-1">
-  //                 Gender
-  //               </label>
-  //               <select
-  //                 name="gender"
-  //                 value={formData.gender}
-  //                 onChange={handleChange}
-  //                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //               >
-  //                 <option value="Male">Male</option>
-  //                 <option value="Female">Female</option>
-  //                 <option value="Other">Other</option>
-  //               </select>
-  //             </div>
-
-  //             <div>
-  //               <label className="block text-sm font-medium text-gray-700 mb-1">
-  //                 Blood Type
-  //               </label>
-  //               <input
-  //                 type="text"
-  //                 name="bloodType"
-  //                 value={formData.bloodType}
-  //                 onChange={handleChange}
-  //                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //                 required
-  //               />
-  //             </div>
-
-  //             <div>
-  //               <label className="block text-sm font-medium text-gray-700 mb-1">
-  //                 Contact Number
-  //               </label>
-  //               <input
-  //                 type="tel"
-  //                 name="contact"
-  //                 value={formData.contact}
-  //                 onChange={handleChange}
-  //                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //                 required
-  //               />
-  //             </div>
-
-  //             <div>
-  //               <label className="block text-sm font-medium text-gray-700 mb-1">
-  //                 Email
-  //               </label>
-  //               <input
-  //                 type="email"
-  //                 name="email"
-  //                 value={formData.email}
-  //                 onChange={handleChange}
-  //                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //                 required
-  //               />
-  //             </div>
-  //           </div>
-
-  //           <div>
-  //             <label className="block text-sm font-medium text-gray-700 mb-1">
-  //               Medical History
-  //             </label>
-  //             <textarea
-  //               name="medicalHistory"
-  //               value={formData.medicalHistory}
-  //               onChange={handleChange}
-  //               rows={4}
-  //               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //             ></textarea>
-  //           </div>
-
-  //           <div className="flex justify-end gap-4">
-  //             <button
-  //               type="button"
-  //               onClick={() => setShowAddForm(false)}
-  //               className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-  //             >
-  //               Cancel
-  //             </button>
-  //             <button
-  //               type="submit"
-  //               className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-  //             >
-  //               Add Patient
-  //             </button>
-  //           </div>
-  //         </form>
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
-  
-
 
   const handleSave = async (data) => {
     try {
@@ -392,7 +187,7 @@ function Patients() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button className="text-blue-600 hover:text-blue-800 mr-3">View</button>
+                    <button onClick={() => navigate("/patient/1234")} className="text-blue-600 hover:text-blue-800 mr-3">View</button>
                     <button className="text-blue-600 hover:text-blue-800">Edit</button>
                   </td>
                 </tr>

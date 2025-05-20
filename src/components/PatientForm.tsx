@@ -15,44 +15,68 @@ type EmergencyContact = {
   name: string;
   relationship: string;
   phone: string;
-  priority: number;
 };
 
 type Insurance = {
-  provider: string;
-  policyNumber: string;
-  groupNumber: string;
-  expiryDate: string;
+  companyName: string;
+  policyCardId: string;
+  tpaName: string;
+  periodFrom: string;
+  periodTo: string;
 };
 
 type MedicalHistory = {
   condition: string;
-  diagnosisDate: string;
-  status: string;
-  notes: string;
-};
-
-type Allergy = {
-  name: string;
-  reaction: string;
-  severity: string;
+  medication: string;
+  medicalReport: boolean;
+  hxOperation: boolean;
+  expectation: string;
 };
 
 type PatientFormData = {
+  registrationId: string;
+  patientName: string;
+  recNo: string;
   firstName: string;
   lastName: string;
+  mobileNo: string;
+  email: string;
+  state: string;
+  city: string;
+  locality: string;
+  zip: string;
+  address: string;
   dob: string;
+  age: string;
+  phoneNumber: string;
+  opNumber: string;
   gender: string;
-  bloodType: string;
-  contact: {
-    phone: string;
-    email: string;
-    address: Address;
-  };
-  emergencyContacts: EmergencyContact[];
+  country: string;
+  residentId: string;
+  medicalHistory: string;
+  patientRemarks: string;
+  medicalConditions: string;
+  patientGroup: string;
+  fee: string;
+  consultationFee: string;
+  type: string;
+  underMedication: boolean;
+  pregnant: boolean;
+  referredBy: string;
+  photo: FileList;
+  specialization: string;
   insurance: Insurance;
-  medicalHistory: MedicalHistory[];
-  allergies: Allergy[];
+  medicalHistoryDetails: MedicalHistory;
+  emergencyContact: EmergencyContact;
+  married: boolean;
+  vaccination: string;
+  parentId: string;
+  generalHistory: string;
+  nationalId: string;
+  hasAllergy: boolean;
+  test: string;
+  department: string;
+  ipNo: string;
 };
 
 interface PatientFormProps {
@@ -69,59 +93,16 @@ const PatientForm: React.FC<PatientFormProps> = ({ initialData, onSave, onCancel
     formState: { errors, isSubmitting },
   } = useForm<PatientFormData>({
     defaultValues: initialData || {
-      firstName: '',
-      lastName: '',
-      dob: '',
-      gender: '',
-      bloodType: '',
-      contact: {
-        phone: '',
-        email: '',
-        address: {
-          street: '',
-          city: '',
-          state: '',
-          zip: '',
-          country: '',
-        },
-      },
-      emergencyContacts: [{ name: '', relationship: '', phone: '', priority: 1 }],
-      insurance: {
-        provider: '',
-        policyNumber: '',
-        groupNumber: '',
-        expiryDate: '',
-      },
-      medicalHistory: [{ condition: '', diagnosisDate: '', status: '', notes: '' }],
-      allergies: [{ name: '', reaction: '', severity: '' }],
+      registrationId: 'OP NO.108',
+      recNo: 'RecNo 930',
+      country: 'India',
+      underMedication: false,
+      pregnant: false,
+      medicalReport: false,
+      hxOperation: false,
+      married: false,
+      hasAllergy: false,
     },
-  });
-
-  const {
-    fields: emergencyContactFields,
-    append: appendEmergencyContact,
-    remove: removeEmergencyContact,
-  } = useFieldArray({
-    control,
-    name: 'emergencyContacts',
-  });
-
-  const {
-    fields: medicalHistoryFields,
-    append: appendMedicalHistory,
-    remove: removeMedicalHistory,
-  } = useFieldArray({
-    control,
-    name: 'medicalHistory',
-  });
-
-  const {
-    fields: allergyFields,
-    append: appendAllergy,
-    remove: removeAllergy,
-  } = useFieldArray({
-    control,
-    name: 'allergies',
   });
 
   const onSubmit = async (data: PatientFormData) => {
@@ -136,292 +117,179 @@ const PatientForm: React.FC<PatientFormProps> = ({ initialData, onSave, onCancel
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-        <User className="h-5 w-5 text-blue-600" />
-        {initialData ? 'Edit Patient Record' : 'Register New Patient'}
-      </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-gray-900">New Patient</h2>
+        <button
+          type="button"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700"
+        >
+          With Patient
+        </button>
+      </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Basic Information Section */}
+        {/* Basic Info Section */}
         <div className="border-b border-gray-200 pb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-            <User className="h-4 w-4 text-blue-600" />
-            Personal Information
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Info</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">First Name*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Registration Id</label>
               <input
-                {...register('firstName', { required: 'First name is required' })}
-                className={`w-full px-3 py-2 border ${errors.firstName ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                {...register('registrationId')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100"
+                readOnly
               />
-              {errors.firstName && (
-                <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
-              )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name*</label>
-              <input
-                {...register('lastName', { required: 'Last name is required' })}
-                className={`w-full px-3 py-2 border ${errors.lastName ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-              />
-              {errors.lastName && (
-                <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth*</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input
-                  type="date"
-                  {...register('dob', { required: 'Date of birth is required' })}
-                  className={`w-full pl-10 px-3 py-2 border ${errors.dob ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                />
-              </div>
-              {errors.dob && (
-                <p className="mt-1 text-sm text-red-600">{errors.dob.message}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Gender*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Patient Name</label>
               <select
-                {...register('gender', { required: 'Gender is required' })}
-                className={`w-full px-3 py-2 border ${errors.gender ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                {...register('patientName')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-                <option value="Prefer not to say">Prefer not to say</option>
+                <option>Please select option</option>
               </select>
-              {errors.gender && (
-                <p className="mt-1 text-sm text-red-600">{errors.gender.message}</p>
-              )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Blood Type</label>
-              <div className="relative">
-                <Droplet className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <select
-                  {...register('bloodType')}
-                  className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Select Blood Type</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-              </div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Rec No</label>
+              <input
+                {...register('recNo')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100"
+                readOnly
+              />
             </div>
           </div>
-        </div>
 
-        {/* Contact Information Section */}
-        <div className="border-b border-gray-200 pb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-            <Phone className="h-4 w-4 text-blue-600" />
-            Contact Information
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number*</label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input
-                  type="tel"
-                  {...register('contact.phone', { required: 'Phone number is required' })}
-                  className={`w-full pl-10 px-3 py-2 border ${errors.contact?.phone ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                />
-              </div>
-              {errors.contact?.phone && (
-                <p className="mt-1 text-sm text-red-600">{errors.contact.phone.message}</p>
-              )}
+              <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+              <input
+                {...register('firstName')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+              <input
+                {...register('lastName')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Mobile No</label>
+              <input
+                {...register('mobileNo')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input
-                  type="email"
-                  {...register('contact.email', {
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Invalid email address',
-                    },
-                  })}
-                  className={`w-full pl-10 px-3 py-2 border ${errors.contact?.email ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                />
-              </div>
-              {errors.contact?.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.contact.email.message}</p>
-              )}
-            </div>
-          </div>
-          <h4 className="text-md font-medium text-gray-900 mt-6 mb-3 flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-blue-600" />
-            Address
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
               <input
-                {...register('contact.address.street')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register('email')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+              <input
+                {...register('state')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
               <input
-                {...register('contact.address.city')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
-              <input
-                {...register('contact.address.state')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">ZIP/Postal Code</label>
-              <input
-                {...register('contact.address.zip')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-              <input
-                {...register('contact.address.country')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register('city')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
           </div>
-        </div>
 
-        {/* Emergency Contacts Section */}
-        <div className="border-b border-gray-200 pb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-            <HeartPulse className="h-4 w-4 text-blue-600" />
-            Emergency Contacts
-          </h3>
-          {emergencyContactFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 bg-gray-50 rounded-lg">
-              <div className="flex justify-between items-center mb-3">
-                <h4 className="text-sm font-medium text-gray-700">Contact #{index + 1}</h4>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeEmergencyContact(index)}
-                    className="text-sm text-red-600 hover:text-red-800"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name*</label>
-                  <input
-                    {...register(`emergencyContacts.${index}.name`, {
-                      required: index === 0 ? 'Emergency contact name is required' : false,
-                    })}
-                    className={`w-full px-3 py-2 border ${
-                      errors.emergencyContacts?.[index]?.name ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                  />
-                  {errors.emergencyContacts?.[index]?.name && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.emergencyContacts[index]?.name?.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Relationship*</label>
-                  <input
-                    {...register(`emergencyContacts.${index}.relationship`, {
-                      required: index === 0 ? 'Relationship is required' : false,
-                    })}
-                    className={`w-full px-3 py-2 border ${
-                      errors.emergencyContacts?.[index]?.relationship ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                  />
-                  {errors.emergencyContacts?.[index]?.relationship && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.emergencyContacts[index]?.relationship?.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone*</label>
-                  <input
-                    type="tel"
-                    {...register(`emergencyContacts.${index}.phone`, {
-                      required: index === 0 ? 'Phone number is required' : false,
-                    })}
-                    className={`w-full px-3 py-2 border ${
-                      errors.emergencyContacts?.[index]?.phone ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                  />
-                  {errors.emergencyContacts?.[index]?.phone && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.emergencyContacts[index]?.phone?.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => appendEmergencyContact({ name: '', relationship: '', phone: '', priority: emergencyContactFields.length + 1 })}
-            className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
-          >
-            + Add Another Emergency Contact
-          </button>
-        </div>
-
-        {/* Insurance Information Section */}
-        <div className="border-b border-gray-200 pb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-            <ClipboardList className="h-4 w-4 text-blue-600" />
-            Insurance Information
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Provider</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Locality</label>
               <input
-                {...register('insurance.provider')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register('locality')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Policy Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Zip</label>
               <input
-                {...register('insurance.policyNumber')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register('zip')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Group Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
               <input
-                {...register('insurance.groupNumber')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register('address')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
               <input
                 type="date"
-                {...register('insurance.expiryDate')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                {...register('dob')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
+              <input
+                {...register('age')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input
+                {...register('phoneNumber')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">OP Number</label>
+              <input
+                {...register('opNumber')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+              <select
+                {...register('gender')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+              <input
+                {...register('country')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100"
+                readOnly
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Resident Id no</label>
+              <input
+                {...register('residentId')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
           </div>
@@ -429,149 +297,441 @@ const PatientForm: React.FC<PatientFormProps> = ({ initialData, onSave, onCancel
 
         {/* Medical History Section */}
         <div className="border-b border-gray-200 pb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-            <ClipboardList className="h-4 w-4 text-blue-600" />
-            Medical History
-          </h3>
-          {medicalHistoryFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 bg-gray-50 rounded-lg">
-              <div className="flex justify-between items-center mb-3">
-                <h4 className="text-sm font-medium text-gray-700">Condition #{index + 1}</h4>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeMedicalHistory(index)}
-                    className="text-sm text-red-600 hover:text-red-800"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Condition*</label>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Medical History</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Medical History</label>
+              <input
+                {...register('medicalHistory')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Patient remarks</label>
+              <input
+                {...register('patientRemarks')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Medical conditions</label>
+              <input
+                {...register('medicalConditions')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Patient Group</label>
+              <input
+                {...register('patientGroup')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Fee</label>
+              <select
+                {...register('fee')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option>Please select</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Consultation fee</label>
+              <input
+                {...register('consultationFee')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+              <select
+                {...register('type')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option>Please select option</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Patient under any medication</label>
+              <div className="flex items-center space-x-4">
+                <label className="inline-flex items-center">
                   <input
-                    {...register(`medicalHistory.${index}.condition`, {
-                      required: index === 0 ? 'Condition is required' : false,
-                    })}
-                    className={`w-full px-3 py-2 border ${
-                      errors.medicalHistory?.[index]?.condition ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                    type="radio"
+                    {...register('underMedication')}
+                    value="true"
+                    className="form-radio h-4 w-4 text-blue-600"
                   />
-                  {errors.medicalHistory?.[index]?.condition && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.medicalHistory[index]?.condition?.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Diagnosis Date</label>
+                  <span className="ml-2">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
                   <input
-                    type="date"
-                    {...register(`medicalHistory.${index}.diagnosisDate`)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    type="radio"
+                    {...register('underMedication')}
+                    value="false"
+                    className="form-radio h-4 w-4 text-blue-600"
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                  <select
-                    {...register(`medicalHistory.${index}.status`)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="">Select Status</option>
-                    <option value="Active">Active</option>
-                    <option value="Resolved">Resolved</option>
-                    <option value="Chronic">Chronic</option>
-                    <option value="Controlled">Controlled</option>
-                  </select>
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                  <textarea
-                    {...register(`medicalHistory.${index}.notes`)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    rows={2}
-                  />
-                </div>
+                  <span className="ml-2">No</span>
+                </label>
               </div>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => appendMedicalHistory({ condition: '', diagnosisDate: '', status: '', notes: '' })}
-            className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
-          >
-            + Add Another Medical Condition
-          </button>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Are you pregnant</label>
+              <div className="flex items-center space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    {...register('pregnant')}
+                    value="true"
+                    className="form-radio h-4 w-4 text-blue-600"
+                  />
+                  <span className="ml-2">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    {...register('pregnant')}
+                    value="false"
+                    className="form-radio h-4 w-4 text-blue-600"
+                  />
+                  <span className="ml-2">No</span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Allergies Section */}
-        <div className="pb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-blue-600" />
-            Allergies
-          </h3>
-          {allergyFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 bg-gray-50 rounded-lg">
-              <div className="flex justify-between items-center mb-3">
-                <h4 className="text-sm font-medium text-gray-700">Allergy #{index + 1}</h4>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeAllergy(index)}
-                    className="text-sm text-red-600 hover:text-red-800"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Allergen*</label>
-                  <input
-                    {...register(`allergies.${index}.name`, {
-                      required: index === 0 ? 'Allergen is required' : false,
-                    })}
-                    className={`w-full px-3 py-2 border ${
-                      errors.allergies?.[index]?.name ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                  />
-                  {errors.allergies?.[index]?.name && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.allergies[index]?.name?.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Reaction</label>
-                  <input
-                    {...register(`allergies.${index}.reaction`)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Severity</label>
-                  <select
-                    {...register(`allergies.${index}.severity`)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="">Select Severity</option>
-                    <option value="Mild">Mild</option>
-                    <option value="Moderate">Moderate</option>
-                    <option value="Severe">Severe</option>
-                    <option value="Life-threatening">Life-threatening</option>
-                  </select>
-                </div>
+        {/* Other Info Section */}
+        <div className="border-b border-gray-200 pb-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Other Info</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Referred By</label>
+              <select
+                {...register('referredBy')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option>--Select--</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Photo</label>
+              <div className="flex items-center">
+                <input
+                  type="file"
+                  {...register('photo')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                />
+                <span className="ml-2 text-sm text-gray-500">No: IL_oven</span>
               </div>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => appendAllergy({ name: '', reaction: '', severity: '' })}
-            className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
-          >
-            + Add Another Allergy
-          </button>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+              <input
+                {...register('specialization')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Created At</label>
+            <input
+              value="2025-05-18 13:39"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100"
+              readOnly
+            />
+          </div>
+        </div>
+
+        {/* Insurance Details Section */}
+        <div className="border-b border-gray-200 pb-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Insurance Details</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+              <input
+                {...register('insurance.companyName')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Policy Card Id Number</label>
+              <input
+                {...register('insurance.policyCardId')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">TPA Name</label>
+              <input
+                {...register('insurance.tpaName')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Period From</label>
+              <input
+                type="date"
+                {...register('insurance.periodFrom')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Period To</label>
+              <input
+                type="date"
+                {...register('insurance.periodTo')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Illness</label>
+              <input
+                {...register('medicalHistoryDetails.condition')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Present Medication Intake</label>
+              <input
+                {...register('medicalHistoryDetails.medication')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Medical Report + MRI/CT/XRAY</label>
+              <div className="flex items-center space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    {...register('medicalHistoryDetails.medicalReport')}
+                    value="true"
+                    className="form-radio h-4 w-4 text-blue-600"
+                  />
+                  <span className="ml-2">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    {...register('medicalHistoryDetails.medicalReport')}
+                    value="false"
+                    className="form-radio h-4 w-4 text-blue-600"
+                  />
+                  <span className="ml-2">No</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Hx Operation</label>
+              <div className="flex items-center space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    {...register('medicalHistoryDetails.hxOperation')}
+                    value="true"
+                    className="form-radio h-4 w-4 text-blue-600"
+                  />
+                  <span className="ml-2">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    {...register('medicalHistoryDetails.hxOperation')}
+                    value="false"
+                    className="form-radio h-4 w-4 text-blue-600"
+                  />
+                  <span className="ml-2">No</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">What conditions need</label>
+              <input
+                {...register('medicalHistoryDetails.expectation')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Expectation for Physiotherapy</label>
+              <input
+                {...register('medicalHistoryDetails.expectation')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Person in case of emergency */}
+        <div className="border-b border-gray-200 pb-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Contact Person in case of emergency</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+              <input
+                {...register('emergencyContact.name')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Relation</label>
+              <input
+                {...register('emergencyContact.relationship')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Mobile No</label>
+              <input
+                {...register('emergencyContact.phone')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">are you married</label>
+              <input
+                {...register('married', { valueAsBoolean: true })}
+                type="checkbox"
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Vaccination</label>
+              <select
+                {...register('vaccination')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option>Please select option</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Parent Id</label>
+              <input
+                {...register('parentId')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">general history</label>
+              <input
+                {...register('generalHistory')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">gene</label>
+              <input
+                {...register('generalHistory')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">National ID</label>
+              <input
+                {...register('nationalId')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+              <input
+                value="do not know"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100"
+                readOnly
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Do you have allergy</label>
+              <select
+                {...register('hasAllergy', { valueAsBoolean: true })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">test</label>
+              <select
+                {...register('test')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option>Please select option</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* department & specialization */}
+        <div className="pb-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">department & specialization</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">department</label>
+              <select
+                {...register('department')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option>Please select option</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">IP NO</label>
+              <input
+                {...register('ipNo')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Refered By:</label>
+              <select
+                {...register('referredBy')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option>Please select option</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="bend"
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+            />
+            <label htmlFor="bend" className="ml-2 block text-sm text-gray-700">
+              bend
+            </label>
+          </div>
         </div>
 
         {/* Form Actions */}
@@ -589,13 +749,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ initialData, onSave, onCancel
             disabled={isSubmitting}
             className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
-            {isSubmitting ? (
-              'Saving...'
-            ) : initialData ? (
-              'Update Patient'
-            ) : (
-              'Register Patient'
-            )}
+            {isSubmitting ? 'Saving...' : 'Save Patient'}
           </button>
         </div>
       </form>

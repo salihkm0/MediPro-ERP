@@ -15,6 +15,8 @@ import Reports from './pages/Reports';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import HospitalLoginPage from './pages/LoginPage';
+import PatientViewPage from './components/PatientViewPage';
+import CalendarView from './components/CalendarView';
 
 function Layout({ children, isSidebarOpen, setIsSidebarOpen }) {
   return (
@@ -54,6 +56,7 @@ function AppWrapper() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/patients" element={<Patients />} />
+        <Route path="/patient/:id" element={<PatientViewPage />} />
         <Route path="/staff" element={<Staff />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/records" element={<Records />} />
@@ -65,6 +68,7 @@ function AppWrapper() {
         <Route path="/reports" element={<Reports />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/appointments/calendar" element={<CalendarView />} />
       </Routes>
     </Layout>
   );
